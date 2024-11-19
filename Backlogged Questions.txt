@@ -13,3 +13,9 @@ DAA:
 Least Common Ancestor
 Greatest Nodes
 Right Side View
+
+
+
+19.11.2024
+N Queens
+path Max Gold 
