@@ -1,0 +1,24 @@
+complete the additional route.
+Update a student document:
+Sends a `PUT` request to update scores of a document using its `rollNo`.
+
+Method: put
+Route: /student/:rollNo
+
+Response:
+if successful:
+status(200).json({ message: "Student updated successfully", updatedStudent });
+
+if no data found:
+status(404).json({ message: "Student not found" });
+
+if exception found:
+status(400).json({ message: "Failed to update student", error: err });
+
+In Exercise-2:
+=================
+To pass the testcases, along with the previous routes
+1. Get a student by rollNo
+2. Insert a student
+3. Delete a student by rollNo
+4. Update the scores of student by rollNo 

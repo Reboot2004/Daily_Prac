@@ -1,0 +1,8 @@
+For Exercise-1
+You need to build the following routes:
+A.
+Insert a new student document:
+Sends a `POST` request to insert the document.
+B.
+Delete the student document:
+Sends a `DELETE` request to delete the inserted document using its `rollNo`.

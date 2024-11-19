@@ -42,7 +42,6 @@ app.post("/student", async (req, res) => {
 });
 
 // B. Delete a student document using rollNo (DELETE)
-// Delete a student document using rollNo (DELETE)
 app.delete("/student/:rollNo", async (req, res) => {
     const rollNo = req.params.rollNo;
     try {
@@ -56,6 +55,7 @@ app.delete("/student/:rollNo", async (req, res) => {
         res.status(400).json({ message: "Failed to delete student", error: err });
     }
 });
+
 // C. Update a student's scores using rollNo (PUT)
 app.put("/student/:rollNo", async (req, res) => {
     const rollNo = req.params.rollNo;
@@ -67,32 +67,27 @@ app.put("/student/:rollNo", async (req, res) => {
             { new: true }
         );
         if (updatedStudent) {
-            res.status(200).json({ message: "Student updated successfully", student: updatedStudent });
+            res.status(200).json({ message: "Student updated successfully", updatedStudent });
         } else {
             res.status(404).json({ message: "Student not found" });
         }
     } catch (err) {
-        res.status(500).json({ message: "Error updating student", error: err });
+        res.status(400).json({ message: "Failed to update student", error: err });
     }
 });
 
-// D. Fetch all students' name, rollNo, and GPA (GET)
-app.get("/students", async (req, res) => {
+// D. Fetch a student by rollNo (GET)
+app.get("/student/:rollNo", async (req, res) => {
+    const rollNo = req.params.rollNo;
     try {
-        const students = await Student.find({}, { name: 1, rollNo: 1, scores: 1 });
-        const result = students.map(student => {
-            const { Java = 0, CPP = 0, Python = 0, GenAI = 0, FSD = 0 } = student.scores;
-            const totalScores = Java + CPP + Python + GenAI + FSD;
-            const GPA = (totalScores / 5).toFixed(2);
-            return {
-                name: student.name,
-                rollNo: student.rollNo,
-                GPA,
-            };
-        });
-        res.status(200).json(result);
+        const student = await Student.findOne({ rollNo });
+        if (student) {
+            res.status(200).json(student);
+        } else {
+            res.status(404).json({ message: "Student not found" });
+        }
     } catch (err) {
-        res.status(500).json({ message: "Error fetching students", error: err });
+        res.status(500).json({ message: "Error fetching student data", error: err });
     }
 });
 

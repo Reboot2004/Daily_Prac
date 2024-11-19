@@ -1,0 +1,29 @@
+FOR EXERCISE: 3
+---------------
+Fetch the students name, rollNo, GPA:
+Sends a `GET` request to fetch the name, rollNo, and GPA based on their scores 
+(GPA should be two decimal point value).
+
+Method: get
+Route: /students
+
+Response:
+
+if successful:
+status(200).json(studentsWithGPA);
+
+Create the studentsWithGPA object in the following format:
+	- Each document should have the following fields:
+		{
+			name: student.name, 
+			rollNo: student.rollNo,
+			gpa
+		}
+			
+	- Formula to calculate GPA is:
+		const gpa = ((Java + CPP + Python + GenAI + FSD) / 5).toFixed(2);
+
+
+if exception found:
+status(400).json({ message: "Failed to fetch students", error: err });
+ 
