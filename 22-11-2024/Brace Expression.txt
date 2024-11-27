@@ -46,3 +46,59 @@ Sample Output-3:
 
 
 Code:
+
+import java.util.*;
+
+class BraceExpression {
+    public static List<String> expandExpression(String exp) {
+        List<String> result = new ArrayList<>();
+        parseExpression(exp, 0, new StringBuilder(), result);
+        Collections.sort(result); // Ensure lexicographical order
+        return result;
+    }
+
+    // Helper function to parse and generate combinations
+    private static void parseExpression(String exp, int index, StringBuilder current, List<String> result) {
+        if (index == exp.length()) {
+            result.add(current.toString());
+            return;
+        }
+
+        char ch = exp.charAt(index);
+        if (ch == '[') {
+            // Find the closing bracket for the current group
+            int closingIndex = findClosingBracket(exp, index);
+            String group = exp.substring(index + 1, closingIndex); // Extract options
+            String[] options = group.split(",");
+
+            for (String option : options) {
+                current.append(option); // Add option to the current word
+                parseExpression(exp, closingIndex + 1, current, result); // Recurse for the rest
+                current.delete(current.length() - option.length(), current.length()); // Backtrack
+            }
+        } else {
+            // Regular character, simply add to the current word
+            current.append(ch);
+            parseExpression(exp, index + 1, current, result);
+            current.deleteCharAt(current.length() - 1); // Backtrack
+        }
+    }
+
+    // Helper function to find the index of the matching closing bracket
+    private static int findClosingBracket(String exp, int openIndex) {
+        int count = 0;
+        for (int i = openIndex; i < exp.length(); i++) {
+            if (exp.charAt(i) == '[') count++;
+            else if (exp.charAt(i) == ']') count--;
+            if (count == 0) return i; // Found the matching bracket
+        }
+        return -1; // Invalid case (should not happen with valid input)
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        String exp = sc.nextLine();
+        List<String> result = expandExpression(exp);
+        System.out.println(result);
+    }
+}

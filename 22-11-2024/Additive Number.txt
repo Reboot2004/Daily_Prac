@@ -53,3 +53,88 @@ Constraints:
 1 <= num.length <= 35, num consists only of digits
 Time complexity: O(N^2)
 Space complexity: O(1)
+
+
+import java.util.*;
+public class Solution {
+    
+    public static boolean isAdditiveNumber(String num) {
+        int n = num.length();
+        
+        // We need at least 3 numbers to form a valid sequence
+        if (n < 3) {
+            return false;
+        }
+
+        // Try every possible length for the first two numbers
+        for (int i = 1; i <= n / 2; i++) {
+            for (int j = i + 1; j < n; j++) {
+                String num1 = num.substring(0, i);
+                String num2 = num.substring(i, j);
+                
+                // Check if num1 and num2 have leading zeros
+                if ((num1.length() > 1 && num1.charAt(0) == '0') || 
+                    (num2.length() > 1 && num2.charAt(0) == '0')) {
+                    continue;
+                    }
+                
+                // Start forming the additive sequence
+                String remaining = num.substring(j);
+                String sum = addStrings(num1, num2);
+                
+                // Check if the sum of num1 and num2 matches the next part of the string
+                if (remaining.startsWith(sum)) {
+                    String nextNum1 = num2;
+                    String nextNum2 = sum;
+                    remaining = remaining.substring(sum.length());
+                    
+                    // Check if the remaining part forms a valid sequence
+                    while (!remaining.isEmpty()) {
+                        sum = addStrings(nextNum1, nextNum2);
+                        if (remaining.startsWith(sum)) {
+                            nextNum1 = nextNum2;
+                            nextNum2 = sum;
+                            remaining = remaining.substring(sum.length());
+                        } else {
+                            break;
+                        }
+                    }
+                    
+                    // If remaining is empty, we found a valid additive sequence
+                    if (remaining.isEmpty()) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+    
+    // Function to add two strings as numbers
+    private static String addStrings(String num1, String num2) {
+        StringBuilder result = new StringBuilder();
+        int i = num1.length() - 1, j = num2.length() - 1, carry = 0;
+        
+        while (i >= 0 || j >= 0 || carry != 0) {
+            int x = (i >= 0) ? num1.charAt(i--) - '0' : 0;
+            int y = (j >= 0) ? num2.charAt(j--) - '0' : 0;
+            int sum = x + y + carry;
+            carry = sum / 10;
+            result.append(sum % 10);
+        }
+        
+        return result.reverse().toString();
+    }
+    
+    public static void main(String[] args) {
+        // Read input
+        Scanner sc = new Scanner(System.in);
+        String num = sc.nextLine();
+        
+        // Check if the number is an additive number
+        boolean result = isAdditiveNumber(num);
+        
+        // Print the result
+        System.out.println(result);
+    }
+}

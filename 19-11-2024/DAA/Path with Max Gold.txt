@@ -53,3 +53,64 @@ Explanation:
 -------------
 You can grab the gold in KGF grid as follows:
 You can obtain like as follows: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7
+
+import java.util.Scanner;
+
+public class GetMaximumGold {
+    public static int maxGold = 0;
+
+    public static int getMaximumGold(int[][] grid) {
+        int rows = grid.length, cols = grid[0].length;
+        maxGold = 0;
+
+        // Start DFS from every cell with gold
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                if (grid[i][j] > 0) {
+                    dfs(grid, i, j, 0);
+                }
+            }
+        }
+        return maxGold;
+    }
+
+    public static void dfs(int[][] grid, int row, int col, int currentGold) {
+        // Boundary conditions or cell with no gold
+        if (row < 0 || row >= grid.length || col < 0 || col >= grid[0].length || grid[row][col] == 0) {
+            maxGold = Math.max(maxGold, currentGold);
+            return;
+        }
+
+        // Collect gold from the current cell
+        int gold = grid[row][col];
+        grid[row][col] = 0; // Mark the cell as visited
+
+        // Explore all 4 possible directions
+        dfs(grid, row + 1, col, currentGold + gold); // Down
+        dfs(grid, row - 1, col, currentGold + gold); // Up
+        dfs(grid, row, col + 1, currentGold + gold); // Right
+        dfs(grid, row, col - 1, currentGold + gold); // Left
+
+        // Backtrack: Restore the gold in the cell
+        grid[row][col] = gold;
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        // Input dimensions
+        int m = sc.nextInt();
+        int n = sc.nextInt();
+        int[][] grid = new int[m][n];
+
+        // Input grid values
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                grid[i][j] = sc.nextInt();
+            }
+        }
+
+        // Find and print the maximum gold
+        System.out.println(getMaximumGold(grid));
+    }
+}

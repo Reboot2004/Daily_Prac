@@ -50,3 +50,34 @@ Explanation:
 111 - 7
 101 - 5
 100 - 4
+
+
+import java.util.*;
+
+public class GrayCode {
+    public static List<Integer> generateGrayCode(int n) {
+        // Initialize the list with 0 for n = 0
+        List<Integer> grayCode = new ArrayList<>();
+        grayCode.add(0);
+
+        // Generate the Gray Code sequence
+        for (int i = 0; i < n; i++) {
+            int size = grayCode.size();
+            // Reflect the current sequence and add the prefix 1 << i
+            for (int j = size - 1; j >= 0; j--) {
+                grayCode.add(grayCode.get(j) | (1 << i));
+            }
+        }
+
+        return grayCode;
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+
+        // Generate and print the Gray Code sequence
+        List<Integer> grayCode = generateGrayCode(n);
+        System.out.println(grayCode);
+    }
+}

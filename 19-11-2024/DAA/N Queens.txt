@@ -36,33 +36,92 @@ Sample Output-2:
 No Solution
 
 
-import java.util.*;
+import java.util.Scanner;
 
 public class NQueenProblem {
-	int N;
+    int N;
 
-	/* A utility function to print solution */
-	void printSolution(int board[][])
-	{
-		for (int i = 0; i < N; i++) {
-			for (int j = 0; j < N; j++)
-				System.out.print(" " + board[i][j]
-								+ " ");
-			System.out.println();
-		}
-	}
-    
-    //Your utility functions goes here
-	boolean solveNQ(){
-	    //Write your code here and return boolean value
-		
-	}
+    /* Utility function to print the solution */
+    void printSolution(int board[][]) {
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                System.out.print(board[i][j] == 1 ? "1" : "0");
+            }
+            System.out.println();
+        }
+    }
 
-	public static void main(String args[])
-	{
-		Scanner sc=new Scanner(System.in);
-		NQueenProblem Queen = new NQueenProblem();
-		Queen.N=sc.nextInt();
-		Queen.solveNQ();
-	}
+    /* Utility function to check if a queen can be placed on board[row][col] */
+    boolean isSafe(int board[][], int row, int col) {
+        // Check this column on the upper side
+        for (int i = 0; i < row; i++) {
+            if (board[i][col] == 1) {
+                return false;
+            }
+        }
+
+        // Check upper diagonal on the left side
+        for (int i = row, j = col; i >= 0 && j >= 0; i--, j--) {
+            if (board[i][j] == 1) {
+                return false;
+            }
+        }
+
+        // Check upper diagonal on the right side
+        for (int i = row, j = col; i >= 0 && j < N; i--, j++) {
+            if (board[i][j] == 1) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /* Solve the N-Queens problem using backtracking */
+    boolean solveNQUtil(int board[][], int row) {
+        // If all queens are placed, return true
+        if (row >= N) {
+            return true;
+        }
+
+        // Try placing a queen in all columns one by one
+        for (int col = 0; col < N; col++) {
+            // Check if it is safe to place the queen at board[row][col]
+            if (isSafe(board, row, col)) {
+                // Place the queen
+                board[row][col] = 1;
+
+                // Recur to place queens in the remaining rows
+                if (solveNQUtil(board, row + 1)) {
+                    return true;
+                }
+
+                // If placing queen at board[row][col] doesn't lead to a solution,
+                // backtrack and remove the queen
+                board[row][col] = 0;
+            }
+        }
+
+        // If the queen cannot be placed in any column in this row, return false
+        return false;
+    }
+
+    boolean solveNQ() {
+        int[][] board = new int[N][N];
+
+        if (!solveNQUtil(board, 0)) {
+            System.out.println("No Solution");
+            return false;
+        }
+
+        printSolution(board);
+        return true;
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        NQueenProblem Queen = new NQueenProblem();
+        Queen.N = sc.nextInt();
+        Queen.solveNQ();
+    }
 }

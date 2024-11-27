@@ -1,0 +1,121 @@
+
+Mr. Revanth Reddy, Chief Minister of Telangana Government has passed a new G.O to Telangana police for safety of Telangana people. 
+In this regard he announced new Vehicles to be released for all the stations working for this mission especially.
+Here we have a 2D mesh, there are P police officers and V vehicles, with P<=V.
+Each police officer and vehicle is a 2D coordinate on this mesh.
+Here the government has assigned a unique vehicle to each police officer.
+
+Now create a method which prints the minimum possible sum of distances between each police officer and their assigned vehicle.
+
+Here the distance is between police officer Pi and vehicle Vi assigned to him.
+And distance between Pi, Vi is calculated as follows: |Pi.x - Vi.x| + |Pi.y - Vi.y|
+
+
+Input Format:
+-------------
+Line-1: Two integers P and V, number of police officers and vehicles.
+Next P lines: Two space separated integers co-ordinates of Police officers.
+Next V lines: Two space separated integers co-ordinates of Vehicles.
+
+Output Format:
+--------------
+Print an integer, the minimum possible sum of distances.
+
+
+Sample Input-1:
+---------------
+3 3
+0 1		// co-ordinates of police
+1 2
+1 3
+4 5		// co-ordinates of vehicles
+2 5
+3 6
+
+Sample Output-1:
+----------------
+17
+
+
+Sample Input-2:
+---------------
+2 2
+0 0		// co-ordinates of police
+2 1
+1 2		// co-ordinates of vehicles
+3 3
+
+Sample Output-2:
+----------------
+6
+
+
+
+
+import java.util.Scanner;
+
+class CampusBikes {
+    public int assignBikes(int[][] workers, int[][] bikes) {
+        int p = workers.length; // Number of police officers
+        int v = bikes.length;   // Number of vehicles
+        int[][] dp = new int[p][1 << v]; // dp array with bitmask
+
+        // Initialize dp array with -1
+        for (int i = 0; i < p; i++) {
+            for (int j = 0; j < (1 << v); j++) {
+                dp[i][j] = -1;
+            }
+        }
+
+        return dfs(0, 0, workers, bikes, dp);
+    }
+
+    private int dfs(int officerIndex, int mask, int[][] workers, int[][] bikes, int[][] dp) {
+        if (officerIndex == workers.length) {
+            return 0; // All officers assigned
+        }
+
+        if (dp[officerIndex][mask] != -1) {
+            return dp[officerIndex][mask];
+        }
+
+        int minDist = Integer.MAX_VALUE;
+
+        for (int bikeIndex = 0; bikeIndex < bikes.length; bikeIndex++) {
+            if ((mask & (1 << bikeIndex)) == 0) { // Check if the vehicle is not yet assigned
+                int distance = Math.abs(workers[officerIndex][0] - bikes[bikeIndex][0])
+                             + Math.abs(workers[officerIndex][1] - bikes[bikeIndex][1]);
+
+                minDist = Math.min(minDist,
+                        distance + dfs(officerIndex + 1, mask | (1 << bikeIndex), workers, bikes, dp));
+            }
+        }
+
+        dp[officerIndex][mask] = minDist;
+        return minDist;
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int p = sc.nextInt(); // Number of police officers
+        int v = sc.nextInt(); // Number of vehicles
+
+        int[][] workers = new int[p][2];
+        int[][] bikes = new int[v][2];
+
+        // Input for police officers
+        for (int i = 0; i < p; i++) {
+            workers[i][0] = sc.nextInt();
+            workers[i][1] = sc.nextInt();
+        }
+
+        // Input for vehicles
+        for (int i = 0; i < v; i++) {
+            bikes[i][0] = sc.nextInt();
+            bikes[i][1] = sc.nextInt();
+        }
+
+        CampusBikes cb = new CampusBikes();
+        System.out.println(cb.assignBikes(workers, bikes));
+    }
+}

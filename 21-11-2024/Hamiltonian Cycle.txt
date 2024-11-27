@@ -1,0 +1,133 @@
+N cities are connected through roads, the cities are numbered from 0 to N-1. 
+The roadmaps are given as a grid of size N*N, roadmap[][], 
+the grid contains 0 and 1 as values grid[i][j]=0, indicates no road 
+between i to j cities, grid[i][j]=1, indicates a road between i and j cities.
+
+You are given an integer N, and the roadmap[][]of size N*N.
+Your task is to find that there exists a loop in the roadmap, such that 
+there exists a route consists of all the cities eaxctly once and the 
+last city in the route should be connected to first city of the same route directly.
+
+If you found such route print the route, otherwise print "No Solution"
+
+Input Format:
+-------------
+Line-1: An integer N, size of the chess board.
+Next N lines: N space separated integers, 0 or 1.
+
+Output Format:
+--------------
+Print any possible route or "No Solution".
+
+Sample Input-1:
+---------------
+5
+0 1 0 1 0
+1 0 1 1 1
+0 1 0 0 1
+1 1 0 0 1
+0 1 1 1 0
+
+Sample Output-1:
+----------------
+0  1  2  4  3  0
+
+Sample Input-2:
+---------------
+5
+0 1 0 1 0
+1 0 1 1 1
+0 1 0 0 1
+1 1 0 0 0
+0 1 1 0 0
+
+Sample Output-2:
+----------------
+No Solution
+
+import java.util.Scanner;
+
+class HamiltonianCycle {
+    static int V; // Number of vertices in the graph
+
+    // Utility function to check if the current vertex can be added to the Hamiltonian cycle
+    boolean isSafe(int v, int graph[][], int path[], int pos) {
+        // Check if the vertex is adjacent to the previous vertex in the path
+        if (graph[path[pos - 1]][v] == 0) {
+            return false;
+        }
+
+        // Check if the vertex is already in the path
+        for (int i = 0; i < pos; i++) {
+            if (path[i] == v) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    // Recursive function to solve the Hamiltonian cycle problem
+    boolean hamCycleUtil(int graph[][], int path[], int pos) {
+        // Base case: If all vertices are included in the path
+        if (pos == V) {
+            // Check if the last vertex is connected to the first vertex
+            return graph[path[pos - 1]][path[0]] == 1;
+        }
+
+        // Try different vertices as the next candidate
+        for (int v = 1; v < V; v++) {
+            // Check if adding vertex `v` to the path is valid
+            if (isSafe(v, graph, path, pos)) {
+                path[pos] = v;
+
+                // Recur to construct the rest of the path
+                if (hamCycleUtil(graph, path, pos + 1)) {
+                    return true;
+                }
+
+                // Backtrack if adding vertex `v` doesn't lead to a solution
+                path[pos] = -1;
+            }
+        }
+
+        return false;
+    }
+
+    // Function to solve the Hamiltonian cycle problem
+    void hamCycle(int graph[][]) {
+        int[] path = new int[V];
+        for (int i = 0; i < V; i++) {
+            path[i] = -1; // Initialize the path with -1
+        }
+
+        path[0] = 0; // Start from the first vertex
+
+        // Check if there is a Hamiltonian cycle
+        if (!hamCycleUtil(graph, path, 1)) {
+            System.out.println("No Solution");
+            return;
+        }
+
+        // Print the solution
+        for (int i = 0; i < V; i++) {
+            System.out.print(path[i] + " ");
+        }
+        System.out.println(path[0]); // Include the starting vertex to complete the cycle
+    }
+
+    public static void main(String args[]) {
+        Scanner sc = new Scanner(System.in);
+        V = sc.nextInt();
+        int graph[][] = new int[V][V];
+
+        for (int i = 0; i < V; i++) {
+            for (int j = 0; j < V; j++) {
+                graph[i][j] = sc.nextInt();
+            }
+        }
+
+        HamiltonianCycle obj = new HamiltonianCycle();
+        obj.hamCycle(graph);
+    }
+}

@@ -52,10 +52,30 @@ class BinaryTreeNode
 
 class Solution {
     public int greatNodes(BinaryTreeNode root) {
-        //Write your code here
+        return countGreatNodes(root, Integer.MIN_VALUE);
     }
 
-    //Your supporting methods(if any) goes here
+    private int countGreatNodes(BinaryTreeNode node, int maxSoFar) {
+        // Base case: if the node is null, return 0
+        if (node == null) {
+            return 0;
+        }
+
+        // Check if the current node is a "Great" node
+        int count = 0;
+        if (node.data >= maxSoFar) {
+            count = 1;
+        }
+
+        // Update maxSoFar for the current path
+        maxSoFar = Math.max(maxSoFar, node.data);
+
+        // Recurse on left and right subtrees
+        count += countGreatNodes(node.left, maxSoFar);
+        count += countGreatNodes(node.right, maxSoFar);
+
+        return count;
+    }
 }
 
 class BTree {
